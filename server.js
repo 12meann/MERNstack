@@ -1,21 +1,18 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const path = require("path");
 const app = express();
 require("dotenv").config();
 
-const items = require("./routes/api/items");
-
 //bodyParser middleware
-app.use(bodyParser.json());
+app.use(express.json());
 
 //db config
 const db = require("./config/keys").mongoURI;
 
 //connect to mongo
 mongoose
-  .connect(db, { useNewUrlParser: true })
+  .connect(db, { useNewUrlParser: true, useCreateIndex: true })
   .then(() => {
     console.log("MongoDb connected...");
   })
@@ -24,7 +21,9 @@ mongoose
   });
 
 //Use routes
-app.use("/api/items", items);
+app.use("/api/items", require("./routes/api/items"));
+app.use("/api/signup", require("./routes/api/signup"));
+app.use("/api/login", require("./routes/api/login"));
 
 // serve static assets if in production
 
